@@ -166,7 +166,7 @@ void setup() {
 
   int i = 0;
   while (WiFi.status() != WL_CONNECTED) {
-    if (i == 60) {
+    if (i == 120) {
       ESP.restart();
     }
     delay(500);
