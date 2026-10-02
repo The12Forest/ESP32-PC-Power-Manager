@@ -50,6 +50,7 @@ unsigned long lastClickTime = 0;
 void callWebhook(const char* url) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("WiFi not connected - skipping webhook call");
+    ESP.restart();
     return;
   }
 
