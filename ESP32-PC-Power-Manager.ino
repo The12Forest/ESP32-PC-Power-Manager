@@ -5,6 +5,7 @@
 #include <ArduinoOTA.h>
 #include <HTTPClient.h>
 
+#define version "v1.3"
 //======================
 //  XIAO ESP32-C3 Pins
 //======================
@@ -132,13 +133,13 @@ void handleButtonApi() {
 }
 
 void handleStatus() {
-  String json = "{\"power_state\":\"";
+  String json = "{\"Ok\": true, \"power_state\":\"";
   if (digitalRead(pc_pled_high) == HIGH) {
     json += "ON";
   } else {
     json += "OFF";
   }
-  json += "\"}";
+  json += "\", \"Version\": \"" + version + "\" }";
 
   server.send(200, "application/json", json);
 }
@@ -257,10 +258,16 @@ void handleButton() {
 //  Main Loop
 //======================
 void loop() {
-  delay(10);
-
+  for (int i = 0; i <= 34; i++) {
+    handleButton();
+    delay(30);
+  }
+  
   ArduinoOTA.handle();
   server.handleClient();
 
-  handleButton();
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.print(F("WiFi connection lost. Going for restart ..."));
+    ESP.restart();
+  }
 }
