@@ -13,6 +13,8 @@
 #define pc_pled_high 8
 #define pc_ps_1 20
 
+#define BUILTIN_LED 21
+
 //======================
 //  WiFi Credentials
 //======================
@@ -149,12 +151,11 @@ void handleStatus() {
 //======================
 void setup() {
   Serial.begin(115200);
-
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
   pinMode(button_1, INPUT_PULLUP);
-
   pinMode(pc_ps_1, OUTPUT);
   digitalWrite(pc_ps_1, LOW);
-
   pinMode(pc_pled_high, INPUT);
 
   Serial.println();
@@ -205,6 +206,14 @@ void setup() {
 
   server.begin();
   Serial.println("HTTP server started");
+
+  for (int i = 0; i < 3; i++) {
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(200);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(200);
+  }
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 //======================
@@ -227,11 +236,13 @@ void handleButton() {
       stableState = reading;
 
       if (stableState == LOW) {
+        digitalWrite(LED_BUILTIN, HIGH);
         digitalWrite(pc_ps_1, HIGH);
         while (digitalRead(button_1) == LOW) {
       Serial.println("Button Pressed.");
           delay(1);
         }
+        digitalWrite(LED_BUILTIN, LOW);
         digitalWrite(pc_ps_1, LOW);
 
         clickCount++;
